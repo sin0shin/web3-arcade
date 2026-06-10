@@ -1,27 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
+import GuessNumber from './components/GuessNumber';
 import './App.css';
 
 function App() {
-  // بررسی اینکه آیا کاربر کیف پول خود را متصل کرده است یا خیر
   const { isConnected } = useAccount();
+  // نگهداری وضعیت اینکه چه بازی‌ای در حال اجراست (اگر null باشد، داشبورد نمایش داده می‌شود)
+  const [activeGame, setActiveGame] = useState(null);
 
-  // تابعی که کاربر را به صفحه پرداخت/بازی هدایت می‌کند (در مراحل بعد تکمیل می‌شود)
   const handleSelectGame = (gameId) => {
     if (!isConnected) {
       alert("لطفاً ابتدا کیف پول خود را متصل کنید (Connect Wallet).");
       return;
     }
-    alert(`شما بازی شماره ${gameId} را انتخاب کردید. به زودی به درگاه پرداخت منتقل می‌شوید!`);
+    setActiveGame(gameId);
   };
+
+  // اگر بازی شماره ۱ انتخاب شده باشد، کامپوننت GuessNumber را رندر می‌کنیم
+  if (activeGame === 1) {
+    return <GuessNumber onBack={() => setActiveGame(null)} />;
+  }
 
   return (
     <div style={styles.container}>
       <header style={styles.header}>
         <h1>پلتفرم آرکید وب۳</h1>
         <p>شبکه تستی اتریوم (Sepolia)</p>
-        {/* دکمه استاندارد اتصال والت */}
         <ConnectButton showBalance={false} />
       </header>
 
@@ -57,7 +62,6 @@ function App() {
   );
 }
 
-// استایل‌های ساده برای زیبایی صفحه
 const styles = {
   container: {
     fontFamily: 'Tahoma, Arial, sans-serif',
