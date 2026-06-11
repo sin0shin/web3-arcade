@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
+import PaymentGateway from './components/PaymentGateway';
 import GuessNumber from './components/GuessNumber';
 import RockPaperScissors from './components/RockPaperScissors';
 import TicTacToe from './components/TicTacToe';
@@ -8,7 +9,10 @@ import './App.css';
 
 function App() {
   const { isConnected } = useAccount();
+  // نگهداری بازی فعال (در صورت null بودن، داشبورد نمایش داده می‌شود)
   const [activeGame, setActiveGame] = useState(null);
+  // نگهداری بازی‌ای که در مرحله پرداخت است
+  const [pendingPaymentGame, setPendingPaymentGame] = useState(null);
   const [language, setLanguage] = useState('en');
 
   const t = {
@@ -89,8 +93,31 @@ function App() {
       alert(selectedText.walletAlert);
       return;
     }
-    setActiveGame(gameId);
+    // هدایت به درگاه پرداخت پیش از ورود به بازی
+    setPendingPaymentGame(gameId);
   };
+
+  // پردازش پس از موفقیت‌آمیز بودن پرداخت
+  const handlePaymentSuccess = () => {
+    setActiveGame(pendingPaymentGame);
+    setPendingPaymentGame(null);
+  };
+
+  // لغو پرداخت و بازگشت به داشبورد
+  const handleCancelPayment = () => {
+    setPendingPaymentGame(null);
+  };
+
+  // صفحه درگاه پرداخت
+  if (pendingPaymentGame !== null) {
+    return (
+      <PaymentGateway 
+        onBack={handleCancelPayment} 
+        language={language} 
+        onPaymentSuccess={handlePaymentSuccess} 
+      />
+    );
+  }
 
   // هدایت به بازی حدس عدد
   if (activeGame === 1) {
