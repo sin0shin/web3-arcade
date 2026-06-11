@@ -54,10 +54,8 @@ function PaymentGateway({ onBack, language, onPaymentSuccess }) {
 
     setStatus(selectedLang.processing);
 
-    // شبیه‌سازی تراکنش وب۳ (یک تاخیر ۲ ثانیه‌ای)
     setTimeout(() => {
       setStatus(selectedLang.success);
-      // انتقال به صفحه بازی پس از تایید تراکنش
       setTimeout(() => {
         onPaymentSuccess();
       }, 1500);
@@ -70,7 +68,7 @@ function PaymentGateway({ onBack, language, onPaymentSuccess }) {
       <p>{selectedLang.desc}</p>
 
       <div style={styles.box}>
-        <p>💵 Fee: <strong>0.001 test SepoliaETH</strong></p>
+        <p>💵 Fee: <strong>0.0000001 test SepoliaETH</strong></p>
         <button style={styles.payButton} onClick={handlePayment}>
           {selectedLang.payBtn}
         </button>
