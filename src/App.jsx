@@ -3,6 +3,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import GuessNumber from './components/GuessNumber';
 import RockPaperScissors from './components/RockPaperScissors';
+import TicTacToe from './components/TicTacToe';
 import './App.css';
 
 function App() {
@@ -99,6 +100,11 @@ function App() {
   // هدایت به بازی سنگ، کاغذ، قیچی
   if (activeGame === 2) {
     return <RockPaperScissors onBack={() => setActiveGame(null)} language={language} />;
+  }
+
+  // هدایت به بازی دوز
+  if (activeGame === 3) {
+    return <TicTacToe onBack={() => setActiveGame(null)} language={language} />;
   }
 
   return (
