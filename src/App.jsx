@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import GuessNumber from './components/GuessNumber';
+import RockPaperScissors from './components/RockPaperScissors';
 import './App.css';
 
 function App() {
   const { isConnected } = useAccount();
   const [activeGame, setActiveGame] = useState(null);
-  // زبان پیش‌فرض انگلیسی (en) تنظیم شده است
   const [language, setLanguage] = useState('en');
 
-  // دیکشنری متن‌های داشبورد به ۴ زبان
   const t = {
     en: {
       title: 'Web3 Arcade Platform',
@@ -92,9 +91,14 @@ function App() {
     setActiveGame(gameId);
   };
 
-  // اگر بازی شماره ۱ انتخاب شده باشد، کامپوننت را با ارسال زبان فعلی رندر می‌کنیم
+  // هدایت به بازی حدس عدد
   if (activeGame === 1) {
     return <GuessNumber onBack={() => setActiveGame(null)} language={language} />;
+  }
+
+  // هدایت به بازی سنگ، کاغذ، قیچی
+  if (activeGame === 2) {
+    return <RockPaperScissors onBack={() => setActiveGame(null)} language={language} />;
   }
 
   return (
