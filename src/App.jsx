@@ -6,57 +6,148 @@ import './App.css';
 
 function App() {
   const { isConnected } = useAccount();
-  // نگهداری وضعیت اینکه چه بازی‌ای در حال اجراست (اگر null باشد، داشبورد نمایش داده می‌شود)
   const [activeGame, setActiveGame] = useState(null);
+  // زبان پیش‌فرض انگلیسی (en) تنظیم شده است
+  const [language, setLanguage] = useState('en');
+
+  // دیکشنری متن‌های داشبورد به ۴ زبان
+  const t = {
+    en: {
+      title: 'Web3 Arcade Platform',
+      network: 'Ethereum Testnet (Sepolia)',
+      heading: 'Choose Your Favorite Game',
+      subtitle: 'Connecting a wallet is required to start games.',
+      game1Title: '🎮 Guess the Number',
+      game1Desc: 'Test your luck and guess the secret number.',
+      game1Btn: 'Start Game 1',
+      game2Title: '✂️ Rock, Paper, Scissors',
+      game2Desc: 'Classic and engaging; beat the AI.',
+      game2Btn: 'Start Game 2',
+      game3Title: '🎲 Tic-Tac-Toe',
+      game3Desc: 'Challenge your strategic skills.',
+      game3Btn: 'Start Game 3',
+      footer: 'Developed on Sepolia Network - Testing Crypto Payments',
+      walletAlert: 'Please connect your wallet first (Connect Wallet).'
+    },
+    fa: {
+      title: 'پلتفرم آرکید وب۳',
+      network: 'شبکه تستی اتریوم (Sepolia)',
+      heading: 'بازی مورد علاقه خود را انتخاب کنید',
+      subtitle: 'برای شروع بازی‌ها، اتصال کیف پول الزامی است.',
+      game1Title: '🎮 بازی حدس عدد',
+      game1Desc: 'شانس خود را امتحان کن و عدد مخفی را حدس بزن.',
+      game1Btn: 'شروع بازی ۱',
+      game2Title: '✂️ سنگ، کاغذ، قیچی',
+      game2Desc: 'کلاسیک و جذاب؛ هوش مصنوعی را شکست بده.',
+      game2Btn: 'شروع بازی ۲',
+      game3Title: '🎲 بازی دوز (Tic-Tac-Toe)',
+      game3Desc: 'مهارت‌های استراتژیک خود را به چالش بکش.',
+      game3Btn: 'شروع بازی ۳',
+      footer: 'توسعه‌یافته روی شبکه Sepolia - تست پرداخت‌های کریپتو',
+      walletAlert: 'لطفاً ابتدا کیف پول خود را متصل کنید (Connect Wallet).'
+    },
+    es: {
+      title: 'Plataforma Web3 Arcade',
+      network: 'Red de Pruebas Ethereum (Sepolia)',
+      heading: 'Elige tu juego favorito',
+      subtitle: 'Se requiere conectar una billetera para iniciar juegos.',
+      game1Title: '🎮 Adivina el Número',
+      game1Desc: 'Pon a prueba tu suerte y adivina el número secreto.',
+      game1Btn: 'Iniciar Juego 1',
+      game2Title: '✂️ Piedra, Papel o Tijera',
+      game2Desc: 'Clásico y atractivo; vence a la IA.',
+      game2Btn: 'Iniciar Juego 2',
+      game3Title: '🎲 Tic-Tac-Toe (Gato)',
+      game3Desc: 'Desafía tus habilidades estratégicas.',
+      game3Btn: 'Iniciar Juego 3',
+      footer: 'Desarrollado en la red Sepolia - Probando pagos cripto',
+      walletAlert: 'Por favor, conecta tu billetera primero (Connect Wallet).'
+    },
+    fr: {
+      title: 'Plateforme Web3 Arcade',
+      network: 'Réseau de Test Ethereum (Sepolia)',
+      heading: 'Choisissez votre jeu préféré',
+      subtitle: 'La connexion d\'un portefeuille est requise pour lancer les jeux.',
+      game1Title: '🎮 Devinez le Nombre',
+      game1Desc: 'Tentez votre chance et devinez le nombre secret.',
+      game1Btn: 'Lancer le jeu 1',
+      game2Title: '✂️ Pierre, Feuille, Ciseaux',
+      game2Desc: 'Classique et captivant ; battez l\'IA.',
+      game2Btn: 'Lancer le jeu 2',
+      game3Title: '🎲 Morpion (Tic-Tac-Toe)',
+      game3Desc: 'Défiez vos compétences stratégiques.',
+      game3Btn: 'Lancer le jeu 3',
+      footer: 'Développé sur le réseau Sepolia - Test des paiements crypto',
+      walletAlert: 'Veuillez d\'abord connecter votre portefeuille (Connect Wallet).'
+    }
+  };
+
+  const selectedText = t[language] || t.en;
 
   const handleSelectGame = (gameId) => {
     if (!isConnected) {
-      alert("لطفاً ابتدا کیف پول خود را متصل کنید (Connect Wallet).");
+      alert(selectedText.walletAlert);
       return;
     }
     setActiveGame(gameId);
   };
 
-  // اگر بازی شماره ۱ انتخاب شده باشد، کامپوننت GuessNumber را رندر می‌کنیم
+  // اگر بازی شماره ۱ انتخاب شده باشد، کامپوننت را با ارسال زبان فعلی رندر می‌کنیم
   if (activeGame === 1) {
-    return <GuessNumber onBack={() => setActiveGame(null)} />;
+    return <GuessNumber onBack={() => setActiveGame(null)} language={language} />;
   }
 
   return (
     <div style={styles.container}>
       <header style={styles.header}>
-        <h1>پلتفرم آرکید وب۳</h1>
-        <p>شبکه تستی اتریوم (Sepolia)</p>
+        <div style={styles.langContainer}>
+          <select 
+            value={language} 
+            onChange={(e) => setLanguage(e.target.value)}
+            style={styles.langSelect}
+          >
+            <option value="en">English (EN)</option>
+            <option value="fa">فارسی (FA)</option>
+            <option value="es">Español (ES)</option>
+            <option value="fr">Français (FR)</option>
+          </select>
+        </div>
+
+        <div>
+          <h1 style={styles.title}>{selectedText.title}</h1>
+          <p style={styles.network}>{selectedText.network}</p>
+        </div>
+        
         <ConnectButton showBalance={false} />
       </header>
 
       <main style={styles.main}>
-        <h2>بازی مورد علاقه خود را انتخاب کنید</h2>
-        <p style={styles.subtitle}>برای شروع بازی‌ها، اتصال کیف پول الزامی است.</p>
+        <h2>{selectedText.heading}</h2>
+        <p style={styles.subtitle}>{selectedText.subtitle}</p>
 
         <div style={styles.grid}>
           <div style={styles.card}>
-            <h3>🎮 بازی حدس عدد</h3>
-            <p>شانس خود را امتحان کن و عدد مخفی را حدس بزن.</p>
-            <button style={styles.button} onClick={() => handleSelectGame(1)}>شروع بازی ۱</button>
+            <h3>{selectedText.game1Title}</h3>
+            <p>{selectedText.game1Desc}</p>
+            <button style={styles.button} onClick={() => handleSelectGame(1)}>{selectedText.game1Btn}</button>
           </div>
 
           <div style={styles.card}>
-            <h3>✂️ سنگ، کاغذ، قیچی</h3>
-            <p>کلاسیک و جذاب؛ هوش مصنوعی را شکست بده.</p>
-            <button style={styles.button} onClick={() => handleSelectGame(2)}>شروع بازی ۲</button>
+            <h3>{selectedText.game2Title}</h3>
+            <p>{selectedText.game2Desc}</p>
+            <button style={styles.button} onClick={() => handleSelectGame(2)}>{selectedText.game2Btn}</button>
           </div>
 
           <div style={styles.card}>
-            <h3>🎲 بازی دوز (Tic-Tac-Toe)</h3>
-            <p>مهارت‌های استراتژیک خود را به چالش بکش.</p>
-            <button style={styles.button} onClick={() => handleSelectGame(3)}>شروع بازی ۳</button>
+            <h3>{selectedText.game3Title}</h3>
+            <p>{selectedText.game3Desc}</p>
+            <button style={styles.button} onClick={() => handleSelectGame(3)}>{selectedText.game3Btn}</button>
           </div>
         </div>
       </main>
 
       <footer style={styles.footer}>
-        <p>توسعه‌یافته روی شبکه Sepolia - تست پرداخت‌های کریپتو</p>
+        <p>{selectedText.footer}</p>
       </footer>
     </div>
   );
@@ -75,7 +166,7 @@ const styles = {
   },
   header: {
     width: '100%',
-    maxWidth: '800px',
+    maxWidth: '850px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -84,6 +175,28 @@ const styles = {
     borderRadius: '12px',
     boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
     marginBottom: '30px',
+  },
+  langContainer: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  langSelect: {
+    padding: '8px',
+    borderRadius: '6px',
+    border: '1px solid #cbd5e1',
+    fontSize: '14px',
+    cursor: 'pointer',
+    backgroundColor: '#f8fafc',
+    fontWeight: 'bold'
+  },
+  title: {
+    margin: 0,
+    fontSize: '24px'
+  },
+  network: {
+    margin: 0,
+    fontSize: '12px',
+    color: '#64748b'
   },
   main: {
     flex: 1,
